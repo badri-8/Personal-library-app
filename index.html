@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Personal Library</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 40px auto;
+    }
+    h2 {
+      margin-top: 30px;
+    }
+    input, button {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+    }
+    button {
+      cursor: pointer;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 10px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📚 Personal Library</h1>
+
+  <!-- Add Book -->
+  <h2>Add Book</h2>
+  <input id="title" placeholder="Book title">
+  <button onclick="addBook()">Add Book</button>
+
+  <!-- Get All Books -->
+  <h2>Get All Books</h2>
+  <button onclick="getBooks()">Load Books</button>
+
+  <!-- Get One Book -->
+  <h2>Get Book by ID</h2>
+  <input id="getId" placeholder="Book ID">
+  <button onclick="getBook()">Get Book</button>
+
+  <!-- Add Comment -->
+  <h2>Add Comment</h2>
+  <input id="commentId" placeholder="Book ID">
+  <input id="comment" placeholder="Comment">
+  <button onclick="addComment()">Add Comment</button>
+
+  <!-- Delete Book -->
+  <h2>Delete Book by ID</h2>
+  <input id="deleteId" placeholder="Book ID">
+  <button onclick="deleteBook()">Delete Book</button>
+
+  <!-- Delete All -->
+  <h2>Delete All Books</h2>
+  <button onclick="deleteAll()">Delete All</button>
+
+  <h2>Response</h2>
+  <pre id="output"></pre>
+
+  <script>
+    const output = document.getElementById('output');
+
+    function show(data) {
+      output.textContent = typeof data === 'string'
+        ? data
+        : JSON.stringify(data, null, 2);
+    }
+
+    async function addBook() {
+      const title = document.getElementById('title').value;
+      const res = await fetch('/api/books', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `title=${encodeURIComponent(title)}`
+      });
+      show(await res.text());
+    }
+
+    async function getBooks() {
+      const res = await fetch('/api/books');
+      show(await res.json());
+    }
+
+    async function getBook() {
+      const id = document.getElementById('getId').value;
+      const res = await fetch(`/api/books/${id}`);
+      show(await res.text());
+    }
+
+    async function addComment() {
+      const id = document.getElementById('commentId').value;
+      const comment = document.getElementById('comment').value;
+      const res = await fetch(`/api/books/${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `comment=${encodeURIComponent(comment)}`
+      });
+      show(await res.text());
+    }
+
+    async function deleteBook() {
+      const id = document.getElementById('deleteId').value;
+      const res = await fetch(`/api/books/${id}`, { method: 'DELETE' });
+      show(await res.text());
+    }
+
+    async function deleteAll() {
+      const res = await fetch('/api/books', { method: 'DELETE' });
+      show(await res.text());
+    }
+  </script>
+
+</body>
+</html>
