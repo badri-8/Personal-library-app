@@ -17,10 +17,12 @@ require('./routes/api')(app);
 
 const PORT = process.env.PORT || 3000;
 
-// ✅ VERY IMPORTANT FOR FCC
+// ✅ Render opens port
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => console.log('Listening on port ' + PORT));
+  app.listen(PORT, () => {
+    console.log(`Listening on port ${PORT}`);
+  });
 }
 
-// ✅ EXPORT APP
+// ✅ FCC needs this
 module.exports = app;
